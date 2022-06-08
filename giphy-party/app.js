@@ -17,9 +17,10 @@ let loadMoreButton = document.querySelector("#loadMoreButton");
 let showPageAndAmount = document.querySelector("#showPageAndAmount");
 
 // ********CREATE EVENT LISTENER FOR SUBMIT********
-GIFForm.addEventListener("submit", getDataAndDisplay);
 loadMoreButton.addEventListener("click", refreshPage);
+GIFForm.addEventListener("submit", getDataAndDisplay);
 
+// **************LOAD MORE EVENT FUNCTION************************
 async function refreshPage(event)
 {
     currentPage += 1;
@@ -29,10 +30,9 @@ async function refreshPage(event)
     let jsonData = retrieveGIFInformation(currentQueryTerm);
 
     jsonData.then(value => putIntoHTML(value));
-        
 }
 
-
+// **************SUBMIT EVENT FUNCTION************************
 async function getDataAndDisplay(event)
 {
     // THIS IS FROM THE NEW BRANCH "testBranch"
@@ -50,23 +50,34 @@ async function getDataAndDisplay(event)
     currentQueryTerm = event.target.inputBox.value.toLowerCase();
     let jsonData = retrieveGIFInformation(event.target.inputBox.value.toLowerCase());
 
-    if (jsonData != "")
-    {
-        // console.log("Entered else (good) should put into HTML");
-        // Pass through all needed information to put into index.html (web site)
-        jsonData.then(value => putIntoHTML(value));
-    }
+    // console.log("Entered else (good) should put into HTML");
+    // Pass through all needed information to put into index.html (web site)
+    jsonData.then(value => putIntoHTML(value));
 }
 
-async function retrieveGIFInformation(queryValue)
+// *************GET ALL INFORMATION RELATED TO QUERY*****************
+async function retrieveGIFInformation(queryValue, showTrending=false)
 {
-    let apiUrl = `http://api.giphy.com/v1/gifs/search?`
-    + `api_key=${API_KEY}`
-    + `&q=${queryValue}`
-    + `&limit=${GIF_LIMIT}`
-    + `&offset=${offset}`
-    + `&rating=${GIF_RATING}`
-    + `&lang=${GIF_LANG}`
+    let apiUrl = "";
+    if (showTrending)
+    {
+        apiUrl = `http://api.giphy.com/v1/gifs/trending?`
+        + `api_key=${API_KEY}`
+        + `&limit=${GIF_LIMIT}`
+        + `&offset=${offset}`
+        + `&rating=${GIF_RATING}`
+        + `&lang=${GIF_LANG}`;
+    }
+    else
+    {
+        apiUrl = `http://api.giphy.com/v1/gifs/search?`
+        + `api_key=${API_KEY}`
+        + `&q=${queryValue}`
+        + `&limit=${GIF_LIMIT}`
+        + `&offset=${offset}`
+        + `&rating=${GIF_RATING}`
+        + `&lang=${GIF_LANG}`;
+    }
 
     try
     {
@@ -81,8 +92,8 @@ async function retrieveGIFInformation(queryValue)
     }
 }
 
-
-function putIntoHTML(GIFData)
+// *************SHOW GIFS IN HTML CONTENT*****************
+function putIntoHTML(GIFData, homePage=false)
 {
     // clear previous GIF's, if any
     GIFGallery.innerHTML  = "";
@@ -101,11 +112,28 @@ function putIntoHTML(GIFData)
         return;
     }
 
+    let count = 0;
     arrayOfGIF.forEach((entireGIF) =>
     {   
         GIFGallery.innerHTML += `<img src=${entireGIF["images"]["fixed_width_downsampled"]["url"]} alt=${entireGIF["title"]}/>`;
+        count += 1;
     })
         // Here is where I REVEAL the button
-    loadMoreButton.classList.remove("hidden");
-    showPageAndAmount.innerHTML = `<p>Page ${currentPage+1}: ${GIF_LIMIT} results shown`;
+    if (homePage)
+    {
+        showPageAndAmount.innerHTML = `<p>Home Page: Trending</p>`;   
+    }
+    else
+    {
+        loadMoreButton.classList.remove("hidden");
+        showPageAndAmount.innerHTML = `<p>Page ${currentPage+1}: ${count} results shown</p>`;   
+    }
+}
+
+
+
+window.onload = function () {
+    let jsonData = retrieveGIFInformation("something", true);
+    jsonData.then(value => putIntoHTML(value, true));
+
 }

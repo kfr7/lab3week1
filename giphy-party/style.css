@@ -36,6 +36,10 @@ label {
     border-color: indigo;
     color: indigo;
 }
+#showPageAndAmount {
+    color: indigo;
+}
+
 .hidden {
     display: none;
 }
