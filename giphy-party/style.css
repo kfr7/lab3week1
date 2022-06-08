@@ -1,0 +1,17 @@
+
+#mainHeader {
+    color: indigo;
+    font-size: 50px;
+    /* display: flex;
+    justify-content: start; */
+}
+
+label {
+    color: indigo;
+    font-size: 15px;
+}
+
+
+#GIFGallery {
+    margin-top: 25px;
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giphy Party</title>
+    <!-- added link element to link css file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="mainHeader">Welcome to Giphy Party!</h1>
+     <form> <!-- add the page here with action="something" -->
+        <div id="searchBoxAndSubmitButton">
+            <label for="inputBox">Type in GIF's you want to see!</label>
+            <input type="text" id="inputBox" name="inputBox" placeholder="Enter Here" required/>
+            <button id="submitButton">Find my GIF!</button>
+        </div>
+
+    </form>
+    <div id="GIFGallery"></div>
+    <p id="Attributions">Powered By Giphy</p>
+    <script src="app.js"></script>
+</body>
+</html>
