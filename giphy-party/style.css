@@ -1,4 +1,3 @@
-
 #mainHeader {
     color: indigo;
     font-size: 50px;
@@ -6,12 +5,42 @@
     justify-content: start; */
 }
 
+body {
+    background-color: lavender;
+}
+
 label {
     color: indigo;
     font-size: 15px;
+}
+
+#inputBox {
+    border-width: 3px;
+    border-color: indigo;
+}
+
+#submitButton {
+    border-width: 1px;
+    border-color: indigo;
+    color: indigo;
 }
 
 
 #GIFGallery {
     margin-top: 25px;
 }
+
+#loadMoreButton {
+    margin-top: 10px;
+    border-width: 1px;
+    border-color: indigo;
+    color: indigo;
+}
+.hidden {
+    display: none;
+}
+
+#credits {
+    margin-top: 75px;
+}
+  

@@ -5,59 +5,81 @@ const API_KEY = 'nOjzgnRK5wSxGHruvjd3HVSux7Zxk46H';  //
 const GIF_LIMIT = 10;
 const GIF_RATING = 'g';
 const GIF_LANG = 'en';
+// Step 7
+let currentQueryTerm = ""
+let currentPage = 0;
+let offset = 0; 
 
-
-// **********PROGRAM START****************
+// **********CREATE DOM REFERENCE****************
 let GIFForm = document.querySelector("form");
 let GIFGallery = document.querySelector("#GIFGallery");
+let loadMoreButton = document.querySelector("#loadMoreButton");
 
+// ********CREATE EVENT LISTENER FOR SUBMIT********
 GIFForm.addEventListener("submit", getDataAndDisplay);
+loadMoreButton.addEventListener("click", refreshPage);
+
+async function refreshPage(event)
+{
+    currentPage += 1;
+    offset = GIF_LIMIT * currentPage;
+
+    event.preventDefault();
+    let jsonData = retrieveGIFInformation(currentQueryTerm);
+
+    jsonData.then(value => putIntoHTML(value));
+        
+}
+
 
 async function getDataAndDisplay(event)
 {
-    console.log("Entered getDataAndDisplay");
-    console.log("");
-    console.log("Event looks like...");
-    console.log(event);
-    console.log("");
+    // THIS IS FROM THE NEW BRANCH "testBranch"
+
+    // reset both values to initial state
+    currentPage = 0;
+    offset = 0;
+
     // Parameters needed...
-    // api_key
-    // q
-    // limit
-    // rating
-    // lang
+    // api_key, q, limit, rating, lang
+
     event.preventDefault();
-    console.log("Now preventing the default.");
+    
+    // Get all needed information
+    currentQueryTerm = event.target.inputBox.value.toLowerCase();
+    let jsonData = retrieveGIFInformation(event.target.inputBox.value.toLowerCase());
+
+    if (jsonData != "")
+    {
+        // console.log("Entered else (good) should put into HTML");
+        // Pass through all needed information to put into index.html (web site)
+        jsonData.then(value => putIntoHTML(value));
+    }
+}
+
+async function retrieveGIFInformation(queryValue)
+{
     let apiUrl = `http://api.giphy.com/v1/gifs/search?`
     + `api_key=${API_KEY}`
-    + `&q=${event.target.inputBox.value.toLowerCase()}`
+    + `&q=${queryValue}`
     + `&limit=${GIF_LIMIT}`
+    + `&offset=${offset}`
     + `&rating=${GIF_RATING}`
     + `&lang=${GIF_LANG}`
 
-    console.log("");
-    console.log(apiUrl);
-    console.log("");
     try
     {
-        console.log("Entered the try statement");
-        console.log("");
         let response = await fetch(apiUrl);
         let jsonData = await response.json();
-        console.log("About to insert into HTML");
-        console.log("");
-        putIntoHTML(jsonData);
-        console.log("Successfully went through putIntoHTML function");
+        return jsonData;
     }
     catch(err)
     {
-        console.log("Broke out of the try into the catch...")
-        console.log("");
         console.error(err);
+        return "";
     }
-    
-
 }
+
 
 function putIntoHTML(GIFData)
 {
@@ -66,11 +88,21 @@ function putIntoHTML(GIFData)
 
     // console.log("See if correctly printing what I want. Should be 400.");
     // console.log(GIFData["data"][0]["images"]["downsized"]["url"]);
+
     let arrayOfGIF = GIFData["data"];
-    arrayOfGIF.forEach((entireGIF) =>
+
+    // Remove "Load More!" Button if initial submit or refresh returns empty page
+    if (arrayOfGIF.length === 0)
     {
-        GIFGallery.innerHTML += `<img src=${entireGIF["images"]["fixed_width_downsampled"]["url"]}/>`;
+        // console.log("Recognized that it was empty");
+        loadMoreButton.classList.add("hidden");
+        return;
+    }
+
+    arrayOfGIF.forEach((entireGIF) =>
+    {   
+        GIFGallery.innerHTML += `<img src=${entireGIF["images"]["fixed_width_downsampled"]["url"]} alt=${entireGIF["title"]}/>`;
     })
-
-
+        // Here is where I REVEAL the button
+        loadMoreButton.classList.remove("hidden");
 }
