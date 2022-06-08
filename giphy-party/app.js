@@ -14,6 +14,7 @@ let offset = 0;
 let GIFForm = document.querySelector("form");
 let GIFGallery = document.querySelector("#GIFGallery");
 let loadMoreButton = document.querySelector("#loadMoreButton");
+let showPageAndAmount = document.querySelector("#showPageAndAmount");
 
 // ********CREATE EVENT LISTENER FOR SUBMIT********
 GIFForm.addEventListener("submit", getDataAndDisplay);
@@ -96,6 +97,7 @@ function putIntoHTML(GIFData)
     {
         // console.log("Recognized that it was empty");
         loadMoreButton.classList.add("hidden");
+        showPageAndAmount.innerHTML = ``;
         return;
     }
 
@@ -104,5 +106,6 @@ function putIntoHTML(GIFData)
         GIFGallery.innerHTML += `<img src=${entireGIF["images"]["fixed_width_downsampled"]["url"]} alt=${entireGIF["title"]}/>`;
     })
         // Here is where I REVEAL the button
-        loadMoreButton.classList.remove("hidden");
+    loadMoreButton.classList.remove("hidden");
+    showPageAndAmount.innerHTML = `<p>Page ${currentPage+1}: ${GIF_LIMIT} results shown`;
 }
